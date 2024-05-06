@@ -309,9 +309,9 @@ def show_palmistry_page():
     # Load the trained model
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
-    model = FingerprintCNN()
-    model.load_state_dict(torch.load(r'fingerprint.pth', map_location=device))
-    model.eval()
+    model_fin = FingerprintCNN()
+    model_fin.load_state_dict(torch.load(r'fingerprint.pth', map_location=device))
+    model_fin.eval()
     
     
     
@@ -363,7 +363,7 @@ def show_palmistry_page():
         img = transform(img)
         img = img.unsqueeze(0)  # Add batch dimension
         with torch.no_grad():
-            outputs = model(img)
+            outputs = model_fin(img)
             _, predicted = torch.max(outputs, 1)
         predicted_class = classes[predicted.item()]
         return predicted_class

@@ -296,7 +296,7 @@ def show_palmistry_page():
             # self.fc1 = nn.Linear(128 * 4 * 4, 128)
             # self.fc2 = nn.Linear(128, len(classes))
             self.fc1 = nn.Linear(512 * 4 * 4, 2048)  # Adjust input size here
-            self.fc2 = nn.Linear(2048, num_classes)  # Adjust output size here
+            self.fc2 = nn.Linear(2048, len(classes))  # Adjust output size here
 
         def forward(self, x):
             x = self.pool(nn.functional.relu(self.conv1(x)))

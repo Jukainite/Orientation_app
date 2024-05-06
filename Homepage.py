@@ -341,19 +341,12 @@ def show_palmistry_page():
     }
     
     
-    # Function to preprocess image for prediction
-    
-    # Function to preprocess image for prediction
-    def preprocess_image(image_path):
-        img = cv2.imread(image_path)
-        img = cv2.resize(img, (128, 128))
-        img = img / 255.0  # Normalize
-        return img.reshape(-1, 128, 128, 3)
+  
     
     
     # Function to predict label for input image
     def predict_label(image_path):
-        img = cv2.imread(image_path)
+        # img = cv2.imread(image_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert to RGB
         img = cv2.resize(img, (128, 128))  # Resize the image to 128x128
         img.reshape(-1, 128, 128, 3)

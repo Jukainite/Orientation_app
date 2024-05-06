@@ -285,39 +285,38 @@ def show_palmistry_page():
     classes = ['Hình cung', 'Vòng tròn hướng tâm', 'Vòng lặp Ulnar', 'Vòm lều', 'Vòng xoáy']
 
     class FingerprintCNN(nn.Module):
-        def __init__(self):
-            super(FingerprintCNN, self).__init__()
-            self.conv1 = nn.Conv2d(3, 32, kernel_size=3, padding=1)
-            self.conv2 = nn.Conv2d(32, 32, kernel_size=3, padding=1)
-            self.conv3 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
-            self.conv4 = nn.Conv2d(64, 64, kernel_size=3, padding=1)
-            self.conv5 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
-            self.pool = nn.MaxPool2d(2, 2)
-            self.fc1 = nn.Linear(128 * 4 * 4, 128)
-            self.fc2 = nn.Linear(128, len(classes))
-            self.fc1 = nn.Linear(512 * 4 * 4, 2048)  # Adjust input size here
-            self.fc2 = nn.Linear(2048, len(classes))  # Adjust output size here
+    def __init__(self):
+        super(FingerprintCNN, self).__init__()
+        self.conv1 = nn.Conv2d(3, 32, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv2d(32, 32, kernel_size=3, padding=1)
+        self.conv3 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
+        self.conv4 = nn.Conv2d(64, 64, kernel_size=3, padding=1)
+        self.conv5 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.fc1 = nn.Linear(128 * 4 * 4, 128)
+        self.fc2 = nn.Linear(128, len(classes))
 
-        def forward(self, x):
-            x = self.pool(nn.functional.relu(self.conv1(x)))
-            x = self.pool(nn.functional.relu(self.conv2(x)))
-            x = self.pool(nn.functional.relu(self.conv3(x)))
-            x = self.pool(nn.functional.relu(self.conv4(x)))
-            x = self.pool(nn.functional.relu(self.conv5(x)))
-            x = x.view(-1, 128 * 4 * 4)
-            # x = x.view(-1, 512 * 4 * 4)
-            x = nn.functional.relu(self.fc1(x))
-            x = self.fc2(x)
-            return x
-
+    def forward(self, x):
+        x = self.pool(nn.functional.relu(self.conv1(x)))
+        x = self.pool(nn.functional.relu(self.conv2(x)))
+        x = self.pool(nn.functional.relu(self.conv3(x)))
+        x = self.pool(nn.functional.relu(self.conv4(x)))
+        x = self.pool(nn.functional.relu(self.conv5(x)))
+        x = x.view(-1, 128 * 4 * 4)
+        x = nn.functional.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
     # Load the trained model
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    
     model = FingerprintCNN()
     model.load_state_dict(torch.load(r'fingerprint.pth', map_location=device))
     model.eval()
-
+    
+    
+    
     # Define class labels and corresponding information
-
+    
     class_info = {
         'Vòng xoáy': {
             'description': 'Những người có dấu vân tay vòng xoáy cực kỳ độc lập và có đặc điểm tính cách nổi trội. Vòng xoáy thường biểu thị mức độ thông minh cao và tính cách có ý chí mạnh mẽ. Những đặc điểm tiêu cực- Bản chất thống trị của họ đôi khi có thể dẫn đến chủ nghĩa hoàn hảo và thiếu sự đồng cảm với người khác.',
@@ -340,21 +339,24 @@ def show_palmistry_page():
             'careers': ['Nghiên cứu và Phát triển', 'Nghệ thuật và Văn hóa', 'Nghệ thuật và Sáng tạo']
         }
     }
-
+    
+    
     # Function to preprocess image for prediction
-
+    
     # Function to preprocess image for prediction
     def preprocess_image(image_path):
         img = cv2.imread(image_path)
         img = cv2.resize(img, (128, 128))
         img = img / 255.0  # Normalize
         return img.reshape(-1, 128, 128, 3)
-
+    
+    
     # Function to predict label for input image
-    def predict_label(img):
-        # img = cv2.imread(image_path)
-        img = np.array(img)
+    def predict_label(image_path):
+        img = cv2.imread(image_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert to RGB
+        img = cv2.resize(img, (128, 128))  # Resize the image to 128x128
+        img.reshape(-1, 128, 128, 3)
         transform = transforms.Compose([
             transforms.ToTensor(),
         ])

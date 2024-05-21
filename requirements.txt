@@ -13,3 +13,6 @@ tensorflow
 efficientnet-pytorch
 nltk
 unidecode
+st-social-media-links
+st_login_form
+supabase
